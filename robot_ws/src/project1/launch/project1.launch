@@ -1,10 +1,10 @@
 <launch>
     <!-- Our nodes -->
-    <!--node pkg="project1" type="navigation_node.py" name="navigation_node" output="screen"/-->
+    <node pkg="project1" type="navigation_node.py" name="navigation_node" output="screen"/>
 
     <!-- Keyboard control -->
-    <!--remap from="cmd_vel_mux/input/teleop" to="/project1/keyboard_input"/-->
-    <!--include file="$(find turtlebot_teleop)/launch/keyboard_teleop.launch"/-->
+    <remap from="cmd_vel_mux/input/teleop" to="/project1/keyboard_input"/>
+    <include file="$(find turtlebot_teleop)/launch/keyboard_teleop.launch"/>
 
 
     <!-- This was taken from the gazebo_ros_pkgs luanch files-->
