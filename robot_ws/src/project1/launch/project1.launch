@@ -2,6 +2,7 @@
     <!-- Our nodes -->
     <node pkg="project1" type="drive_node.py" name="drive_node" output="screen"/>
     <node pkg="project1" type="collision_node.py" name="collision_node" output="screen"/>
+    <node pkg="project1" type="movement_node.py" name="movement_node" output="screen"/>
 
     <!-- Keyboard control -->
     <remap from="cmd_vel_mux/input/teleop" to="/project1/keyboard_input"/>
