@@ -7,6 +7,7 @@ from sensor_msgs.msg import LaserScan #fake laser scan created by camera point c
 
 from laser_work import laser_work as lw
 import math
+import random
 
 # Speed which the robot with turn (degree/second)
 ANGULAR_SPEED = 40
@@ -60,7 +61,7 @@ def turn_robot(angle, clockwise):
 	current_angle = 0
 
 	# start rotating
-	while current_angle < relative_angle:
+	while (current_angle < relative_angle) and (not rospy.get_param("HALT")) :
 		pub.publish(direction_command)
 		t_1 = rospy.Time.now().to_sec()
 		current_angle = angular_speed*(t_1-t_0)
@@ -84,6 +85,11 @@ def avoid_collision(timer_event):
 	"""
 	global laser_info
 	global is_rotating
+
+	# return if halt command initiated
+	if rospy.get_param("HALT"):
+		return
+
 	try:
 		# Detection 
 		obstcl_exist, obstcl_dir, obstcl_angle, obstcl_distance = lw.detect_obstacles(laser_info)
@@ -99,20 +105,29 @@ def avoid_collision(timer_event):
 		if is_rotating:
 			return
 
+		# set the WAIT parameter so other nodes stop trying to move the robot while turning
+		rospy.set_param("WAIT", True)
+
+		# introduce a small random angle to prevent corner deadlocks 
+		delta_theta = random.randrange(-3,3)
+
 		# decide what is obstacle and respond properly
 		if obstcl_dir == lw.CENTER:
 			# print("Obstacle in center")
 			clockwise = obstcl_angle >= 0
-			turn_robot(abs(obstcl_angle) + 180, clockwise)
+			turn_robot(abs(obstcl_angle) + 180 + delta_theta, clockwise)
 			# turn back
 		elif obstcl_dir == lw.RIGHT:
 			# print("Obstacle in right")
-			turn_robot(90 - abs(obstcl_angle),False)
+			turn_robot(90 - abs(obstcl_angle) + delta_theta,False)
 			# turn left
 		elif obstcl_dir == lw.LEFT:
 			# print("Obstacle in left")
-			turn_robot(90 - abs(obstcl_angle), True)
+			turn_robot(90 - abs(obstcl_angle) + delta_theta, True)
 			# turn right
+
+		# set the wait param back to false
+		rospy.set_param("WAIT", False)
 
 def main():
 
