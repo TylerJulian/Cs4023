@@ -17,16 +17,60 @@ laser_info = None
 # publisher
 pub = None
 
+# a semaphore to prevent initiating two rotation command
+is_rotating = False
+
 
 def laser_read(laser_msg):
 	global laser_info
 	laser_info = laser_msg
 
 
-def turn_robot(angle,clockwise):
+def turn_robot(angle: float, clockwise: bool):
+	"""
+	A function used to turn the robot, an imitation of code used in ros wiki 
+	http://wiki.ros.org/turtlesim/Tutorials/Rotating%20Left%20and%20Right
+	"""
+
+	# set rotation semaphore true
+	is_rotating = True
 	direction_command = Twist()
+	
+	# There is no linear movement
 	direction_command.linear = Vector3(0,0,0)
-	direction_command.angular = Vector3(0,0,)
+    
+	# convert angular speed to radian 
+	angular_speed = math.radians(ANGULAR_SPEED)
+	relative_angle = math.radians(angle)
+
+	# Set rotation direction properly
+	if clockwise:
+		z_component = -abs(angular_speed)
+	else:
+		z_component = abs(angular_speed)
+	
+	direction_command.angular = Vector3(0,0,z_component)
+	# rotation 
+
+	# get initial time 
+	t_0 = rospy.Time.now().to_sec()
+	current_angle = 0
+
+	# start rotating
+	while current_angle < relative_angle:
+		pub.publish(direction_command)
+		t_1 = rospy.Time.now().to_sec()
+		current_angle = angular_speed*(t_1-t_0)
+
+	# stop the rotation
+	direction_command.angular = Vector3(0,0,0)
+	pub.publish(direction_command)
+
+	# done rotating, set semaphore false
+	is_rotating = False
+	
+
+	
 
 def avoid_collision(timer_event):
 	global laser_info
