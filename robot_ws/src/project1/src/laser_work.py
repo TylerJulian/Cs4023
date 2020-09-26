@@ -3,13 +3,13 @@ import math
 
 class laser_work:
     """ 
-    @version: 1 
+    @version: 1.1 
     @Author: yashar
 
 
     laser work class provides series of tools to work with laser readings.
     """
-
+    
     RIGHT = 'R'
     LEFT = 'L'
     CENTER = 'C'
@@ -107,18 +107,16 @@ class laser_work:
         return True, obstacle_direction, angle_delta, min_distance 
         
 
-
-
-
-        
-
-
-
     @staticmethod
     def scan_right_side(ranges, mri, increment, max_dist):
+        """
+        Analyse laser info gathered from right side of the robot
+        """
         right_side_angle = 0
         min_distance = max_dist
+        # start from middle index and go backward to zeroth index
         for i in range(mri, -1, -1):
+            # check if this laser reading violates range safety
             if ranges[i] < laser_work.AVOIDANCE_DISTANCE:
                 current_angle = (mri - i) * increment
                 # update max angle
@@ -126,17 +124,20 @@ class laser_work:
                     right_side_angle = current_angle
                 # update min_distance
                 if ranges[i] < min_distance:
-                    
                     min_distance = ranges[i]
         
         return right_side_angle, min_distance
     
     @staticmethod
     def scan_left_side(ranges ,mri, increment, max_dist):
+        """
+        Analyse laser info gathered from left side of the robot
+        """
         left_side_angle = 0
         min_distance = max_dist
+        # start from middle index
         for i in range(mri, len(ranges)):
-            
+            # check if this laser reading violates range safety
             if ranges[i] < laser_work.AVOIDANCE_DISTANCE:
                 current_angle = (i - mri) * increment
                 # update max angle
