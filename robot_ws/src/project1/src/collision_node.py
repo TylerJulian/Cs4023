@@ -9,7 +9,7 @@ from laser_work import laser_work as lw
 import math
 
 # Speed which the robot with turn (degree/second)
-ANGULAR_SPEED = 5
+ANGULAR_SPEED = 40
 
 # laser message (data from laser sensor sub)
 laser_info = None
@@ -26,11 +26,14 @@ def laser_read(laser_msg):
 	laser_info = laser_msg
 
 
-def turn_robot(angle: float, clockwise: bool):
+def turn_robot(angle, clockwise):
 	"""
 	A function used to turn the robot, an imitation of code used in ros wiki 
 	http://wiki.ros.org/turtlesim/Tutorials/Rotating%20Left%20and%20Right
 	"""
+	global is_rotating
+	global pub
+	
 
 	# set rotation semaphore true
 	is_rotating = True
@@ -73,25 +76,42 @@ def turn_robot(angle: float, clockwise: bool):
 	
 
 def avoid_collision(timer_event):
+	"""
+	Uses laser_info to check if there is an object in front of the robot
+	Symmetric object classified as an obstacle in center, and asymmetric objects 
+	are classified as an obstacle in the right or left. 
+
+	"""
 	global laser_info
+	global is_rotating
 	try:
+		# Detection 
 		obstcl_exist, obstcl_dir, obstcl_angle, obstcl_distance = lw.detect_obstacles(laser_info)
 	except AttributeError:
 		print("Laser not loaded yet")
 		return
+    
 
 	if obstcl_exist == False:
 		return
 	else:
-		
+		# if the robot already in rotation because of the previous avoidance command, just return
+		if is_rotating:
+			return
+
+		# decide what is obstacle and respond properly
 		if obstcl_dir == lw.CENTER:
-			print("Obstacle in center")
+			# print("Obstacle in center")
+			clockwise = obstcl_angle >= 0
+			turn_robot(abs(obstcl_angle) + 180, clockwise)
 			# turn back
 		elif obstcl_dir == lw.RIGHT:
-			print("Obstacle in right")
+			# print("Obstacle in right")
+			turn_robot(90 - abs(obstcl_angle),False)
 			# turn left
 		elif obstcl_dir == lw.LEFT:
-			print("Obstacle in left")
+			# print("Obstacle in left")
+			turn_robot(90 - abs(obstcl_angle), True)
 			# turn right
 
 def main():
