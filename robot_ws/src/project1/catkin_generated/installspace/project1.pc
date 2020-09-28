@@ -1,0 +1,8 @@
+prefix=/usr/local
+
+Name: project1
+Description: Description of project1
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 
