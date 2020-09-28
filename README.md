@@ -26,10 +26,10 @@ roslaunch src/project1/launch/project1.launch
 - [x] Bumper collision behaver 
 - [x] Escape from symmetric obstacles 
 - [x] Escape from asymmetric obstacles
-- [X] Turning randomly 
-- [X] Driving forward
-- [ ] Mapping" the environment (filling in an occupancy grid)
-- [ ] World and Launch File Documentation
+- [x] Turning randomly 
+- [x] Driving forward
+- [x] Mapping" the environment (filling in an occupancy grid)
+- [x] World and Launch File Documentation
 - [ ] Robot Code Documentation
 
 
