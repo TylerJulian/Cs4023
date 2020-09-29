@@ -30,6 +30,6 @@ roslaunch src/project1/launch/project1.launch
 - [x] Driving forward
 - [x] Mapping" the environment (filling in an occupancy grid)
 - [x] World and Launch File Documentation
-- [ ] Robot Code Documentation
+- [x] Robot Code Documentation
 
 
