@@ -57,7 +57,7 @@ def publish_command(timer_event):
 def is_twist_empty(keyboard_command):
 	state_linear = (keyboard_command.linear.x == keyboard_command.linear.y == keyboard_command.linear.z == 0)
 	state_angular = (keyboard_command.angular.x == keyboard_command.angular.y == keyboard_command.angular.z == 0)
-	return (state_linear == state_angular)
+	return (state_linear and state_angular)
 
 def main():
 	#main publisher
