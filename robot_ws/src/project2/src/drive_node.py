@@ -7,21 +7,12 @@ from kobuki_msgs.msg import BumperEvent # we need this for bumper collision
 
 #main publisher
 pub = None
-#most recent keyboard command
-keyboard_command = Twist()
+
 #most recent bumper_state
 is_bumped = False
 # most recent planned command
 path_plan_command = Twist()
 
-def get_keyboard_command(key_msg):
-	global keyboard_command
-	keyboard_command = key_msg
-	# force other nodes to stop moving and wait when there is a keyboard
-	if not is_twist_empty(keyboard_command):
-		rospy.set_param("KEY", True)
-		
-	# print(keyboard_command)
 
 def bumper_state(bumper_state):
 	global is_bumped
@@ -45,19 +36,12 @@ def publish_command(timer_event):
 		return
 
 	#Checks to see if there is a keyboard command or not. If there is no keyboard command then the path_planning_command is published
-	if is_twist_empty(keyboard_command):
-		pub.publish(path_plan_command)
-	else:
-		pub.publish(keyboard_command)
-		rospy.set_param("KEY", False)
-		# clear the key wait restriction
-		
 
-#check if the twist message is zero
-def is_twist_empty(keyboard_command):
-	state_linear = (keyboard_command.linear.x == keyboard_command.linear.y == keyboard_command.linear.z == 0)
-	state_angular = (keyboard_command.angular.x == keyboard_command.angular.y == keyboard_command.angular.z == 0)
-	return (state_linear and state_angular)
+	pub.publish(keyboard_command)
+	rospy.set_param("KEY", False)
+	# clear the key wait restriction
+	
+
 
 def main():
 	#main publisher
