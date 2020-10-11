@@ -52,9 +52,6 @@ def main():
 	#global publisher
 	pub = rospy.Publisher("/mobile_base/commands/velocity",Twist, queue_size=1)
 
-	#subscribe to keyboard
-	rospy.Subscriber("/project1/keyboard_input", Twist, get_keyboard_command)
-	#subscribe to bumper
 	rospy.Subscriber("/mobile_base/events/bumper", BumperEvent, bumper_state)
 
 	# Create a halt parameter, this will be used by other nodes to stop when true
