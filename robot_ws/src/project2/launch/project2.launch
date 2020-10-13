@@ -1,24 +1,13 @@
 <launch>
     <!-- Our nodes -->
-    <node pkg="project1" type="drive_node.py" name="drive_node" output="screen"/>
-    <node pkg="project1" type="collision_node.py" name="collision_node" output="screen"/>
-    <node pkg="project1" type="movement_node.py" name="movement_node" output="screen"/>
-
-    <!-- Keyboard control -->
-    <remap from="cmd_vel_mux/input/teleop" to="/project1/keyboard_input"/>
-    <include file="$(find turtlebot_teleop)/launch/keyboard_teleop.launch"/>
-
-    <!--- Launch gmapping -->
-    <include file="$(find turtlebot_navigation)/launch/includes/gmapping/gmapping.launch.xml"/>
-
-    <!--- Launch rviz -->
-    <include file = "$(find turtlebot_rviz_launchers)/launch/view_navigation.launch"/>
+    <node pkg="project2" type="main_node.py" name="main_node" output="screen"/>
 
     <!-- This was taken from the gazebo_ros_pkgs luanch files-->
     <!-- https://github.com/ros-simulation/gazebo_ros_pkgs/blob/kinetic-devel/gazebo_ros/launch/empty_world.launch-->
     <arg name="world_file" default="$(find project2)/gazebo_world/project_1_world"/>
-    <arg name="gui"        default="true"/>
+    <arg name="gui" default="true"/>
 
+    <!-- TURTLEBOT_BASE -->
     <arg name="base"       value="$(optenv TURTLEBOT_BASE kobuki)"/> <!-- create, roomba -->
     <arg name="battery"    value="$(optenv TURTLEBOT_BATTERY /proc/acpi/battery/BAT0)"/>    <!-- /proc/acpi/battery/BAT0 -->
     <arg name="stacks"     value="$(optenv TURTLEBOT_STACKS hexagons)"/>  <!-- circles, hexagons -->
