@@ -5,9 +5,14 @@ from project2_dispatcher import Dispatcher
 
 
 def main():
-
+    # initiate main node
     rospy.init_node('main_node')
+
+    # initiate dispatcher
     dispatcher = Dispatcher()
+    while not rospy.is_shutdown():
+        pass
+    dispatcher.kill()
     rospy.spin()
 
 

@@ -55,7 +55,6 @@ class LaserWorks:
 
         # min laser readable distance
         min_distance = laser_info.range_min
-        
 
         # minimum reading angle, the right side of the robot
         min_angle = math.degrees(laser_info.angle_min)
@@ -76,16 +75,16 @@ class LaserWorks:
         middle_reading_index = int(math.floor(total_reading_count/2))
 
         # scan left and right sides 
-        right_max_angle, min_right_distance = laser_work.scan_right_side(ranges,middle_reading_index,increment, max_distance)
-        left_max_angle, min_left_distance = laser_work.scan_left_side(ranges,middle_reading_index,increment, max_distance)
+        right_max_angle, min_right_distance = LaserWorks.scan_right_side(ranges, middle_reading_index, increment, max_distance)
+        left_max_angle, min_left_distance = LaserWorks.scan_left_side(ranges, middle_reading_index, increment, max_distance)
         
         # find the minimum distance
-        min_distance = min([min_left_distance,min_right_distance])
+        min_distance = min([min_left_distance, min_right_distance])
         # print("Min Distance: " + str(min_distance))
 
         # check if there is any obstacles in defined distance
         obstacle_exists = False
-        if min_distance > laser_work.AVOIDANCE_DISTANCE:
+        if min_distance > LaserWorks.AVOIDANCE_DISTANCE:
             # No obstacles, just return float('inf')
             return False, None, None, None ### CONDITION 1 EXIT : No obstacles
 
@@ -93,16 +92,16 @@ class LaserWorks:
         angle_delta = right_max_angle - left_max_angle
 
         obstacle_direction = None
-        if abs(angle_delta) < laser_work.ANGLE_TOLERANCE:
-            obstacle_direction = laser_work.CENTER
+        if abs(angle_delta) < LaserWorks.ANGLE_TOLERANCE:
+            obstacle_direction = LaserWorks.CENTER
         else:
             if angle_delta < 0:
                 # obstacle mainly is in left side
-                obstacle_direction = laser_work.LEFT
+                obstacle_direction = LaserWorks.LEFT
             
             else:
                 # obstacle mainly is in right side
-                obstacle_direction = laser_work.RIGHT
+                obstacle_direction = LaserWorks.RIGHT
 
         return True, obstacle_direction, angle_delta, min_distance 
         
@@ -117,7 +116,7 @@ class LaserWorks:
         # start from middle index and go backward to zeroth index
         for i in range(mri, -1, -1):
             # check if this laser reading violates range safety
-            if ranges[i] < laser_work.AVOIDANCE_DISTANCE:
+            if ranges[i] < LaserWorks.AVOIDANCE_DISTANCE:
                 current_angle = (mri - i) * increment
                 # update max angle
                 if current_angle > right_side_angle:
@@ -129,7 +128,7 @@ class LaserWorks:
         return right_side_angle, min_distance
     
     @staticmethod
-    def scan_left_side(ranges ,mri, increment, max_dist):
+    def scan_left_side(ranges, mri, increment, max_dist):
         """
         Analyse laser info gathered from left side of the robot
         """
@@ -138,7 +137,7 @@ class LaserWorks:
         # start from middle index
         for i in range(mri, len(ranges)):
             # check if this laser reading violates range safety
-            if ranges[i] < laser_work.AVOIDANCE_DISTANCE:
+            if ranges[i] < LaserWorks.AVOIDANCE_DISTANCE:
                 current_angle = (i - mri) * increment
                 # update max angle
                 if current_angle > left_side_angle:
@@ -146,15 +145,5 @@ class LaserWorks:
                 # update min_distance
                 if ranges[i] < min_distance:
                     min_distance = ranges[i]
-                    
-        
+
         return left_side_angle, min_distance
-
-
-
-
-        
-
-
-
-

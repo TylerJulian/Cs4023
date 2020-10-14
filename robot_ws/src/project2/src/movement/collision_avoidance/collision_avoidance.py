@@ -18,7 +18,8 @@ class Avoidance:
     prevents hitting obstacles.
     """
 
-    def __init__(self):
+    def __init__(self, dispatcher):
+        self.dispatcher = dispatcher
         # Get the movement publisher
         self.pub = rospy.Publisher("/mobile_base/commands/velocity", Twist, queue_size=1)
 
@@ -27,7 +28,7 @@ class Avoidance:
 
         # subscribe to laser sensor
         rospy.Subscriber('/scan', LaserScan, self.laser_read)
-        rospy.Timer(rospy.Duration(secs=.2), self.avoid_collision)
+        self.timer = rospy.Timer(rospy.Duration(secs=.2), self.avoid_collision)
 
     def laser_read(self, laser_msg):
         self.laser_info = laser_msg
@@ -78,3 +79,12 @@ class Avoidance:
 
             # set the wait param back to false
             rospy.set_param("WAIT", False)
+
+    def kill(self):
+        """
+        Stops all the threads fired by this class
+        @return: None
+        """
+        print("[Avoidance] killing")
+        self.timer.shutdown()
+        self.pub.unregister()

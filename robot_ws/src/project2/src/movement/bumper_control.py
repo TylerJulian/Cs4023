@@ -17,7 +17,7 @@ class BumperControl:
         rospy.Subscriber("/mobile_base/events/bumper", BumperEvent, self.bumper_state)
 
         # ! Very important to register this publish command, therefore ros creates a thread
-        rospy.Timer(rospy.Duration(secs=.2), self.publish_command)
+        self.timer = rospy.Timer(rospy.Duration(secs=.2), self.publish_command)
 
     def bumper_state(self, bumper_state):
         self.is_bumped = bumper_state.state == 1 or self.is_bumped
@@ -27,7 +27,7 @@ class BumperControl:
 
         if self.is_bumped == 1:
             # Set a Halt parameter to true so other nodes stop trying to move
-            self.dispatcher.HALT = True
+            rospy.set_param("HALT", True)
 
             stop_movement_command = Twist()
             stop_movement_command.linear = Vector3(0, 0, 0)
@@ -36,4 +36,13 @@ class BumperControl:
 
             # print("bumped")
             return
+
+    def kill(self):
+        """
+        Kills all the threads fired by this class
+        @return: None
+        """
+        print("[bumper control] killing")
+        self.timer.shutdown()
+        self.publisher.unregister()
 
