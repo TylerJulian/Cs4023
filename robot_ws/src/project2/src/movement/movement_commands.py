@@ -55,6 +55,7 @@ class MovementCommands:
         An imitation of code used in ros wiki
         http://wiki.ros.org/turtlesim/Tutorials/Rotating%20Left%20and%20Right
         """
+
         move_command = Twist()
 
         # no turning
@@ -66,7 +67,7 @@ class MovementCommands:
         # moving forward for specified distance
         t_0 = rospy.Time.now().to_sec()
         current_distance = 0
-        while current_distance < distance and not rospy.get_param("HALT"):
+        while current_distance < distance and (not (rospy.get_param("HALT") or rospy.get_param("WAIT"))):
             pub.publish(move_command)
             t_1 = rospy.Time.now().to_sec()
             current_distance = speed * (t_1 - t_0)

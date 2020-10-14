@@ -10,7 +10,11 @@ class PlanInput:
         print("Welcome, Choose one of following options or Ctrl+C to exit anytime: ")
         print("[1]: Enter coordinates for tasks by hand.")
         print("[2]: Use provided example set of tasks.")
-        user_choice = raw_input()
+        try:
+            user_choice = raw_input()
+        except KeyboardInterrupt:
+            print("Exiting...")
+            return -2
         if user_choice.lower() == '1':
             return 1
         elif user_choice.lower() == '2':
@@ -43,7 +47,11 @@ class PlanInput:
 
     @staticmethod
     def get_input():
-        u_in = raw_input()
+        try:
+            u_in = raw_input()
+        except KeyboardInterrupt:
+            print("Exiting...")
+            return False, None
         if u_in.lower() == "start":
             return True, u_in
         else:

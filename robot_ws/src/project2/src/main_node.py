@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+
+
 import rospy
 
 from project2_dispatcher import Dispatcher
@@ -6,13 +8,12 @@ from project2_dispatcher import Dispatcher
 
 def main():
     # initiate main node
-    rospy.init_node('main_node')
+    rospy.init_node('main_node', anonymous=False, log_level=rospy.WARN)
 
     # initiate dispatcher
     dispatcher = Dispatcher()
-    while not rospy.is_shutdown():
-        pass
-    dispatcher.kill()
+    # register the dispatcher kill to fired when exiting
+    rospy.on_shutdown(lambda: dispatcher.kill())
     rospy.spin()
 
 
