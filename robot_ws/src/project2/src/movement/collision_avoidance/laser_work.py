@@ -1,7 +1,7 @@
 import math
 
 
-class laser_work:
+class LaserWorks:
     """ 
     @version: 1.1 
     @Author: yashar

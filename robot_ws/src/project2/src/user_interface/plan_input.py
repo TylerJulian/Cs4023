@@ -1,26 +1,44 @@
 class PlanInput:
+
+    EXAMPLE_TASKS = [((2, 2.5), (12.5, 2.5)), ((12.5, 12.5), (5, 12.5))]
+
     def __init__(self):
         pass
 
     @staticmethod
-    def hello():
-        print("hello")
+    def initial_user_prompt():
+        print("Welcome, Choose one of following options or Ctrl+C to exit anytime: ")
+        print("[1]: Enter coordinates for tasks by hand.")
+        print("[2]: Use provided example set of tasks.")
+        user_choice = raw_input()
+        if user_choice.lower() == '1':
+            return 1
+        elif user_choice.lower() == '2':
+            return 2
+        else:
+            return -1
 
     @staticmethod
     def get_coordinates_from_user():
         print("Please enter a set of coordinates in the following format: ")
         print("((x1,y2),(x2,y2))")
         print("Or enter the START to start")
+        # create a list of tasks to return
+        task_list = []
         while True:
             is_start, u_in = PlanInput.get_input()
             if not is_start:
-                x, y = 0, 0
+
                 try:
-                    x, y = PlanInput.parse_coordinate(u_in)
+                    journey = PlanInput.parse_point(u_in)
+                    task_list.append(journey)
+                    print("Task: " + str(journey) + ", added, enter other point or START:")
                 except ValueError:
-                    print ("Wrong Format")
-                print("X: " + str(x))
-                print("Y: " + str(y))
+                    print ("Wrong Format! enter other point or START:")
+            else:
+                break
+        return task_list
+
 
 
     @staticmethod
@@ -32,52 +50,43 @@ class PlanInput:
             return False, u_in
 
 
-    @staticmethod
-    def parse_coordinate(coordinate):
-        # we are doing a state machine here
-        x_index_start = -1
-        x_index_end = -1
-        y_index_start = -1
-        y_index_end = -1
-        state = 0
-        index = 0
-        while index < len(coordinate):
-            if state == 0:
-                if coordinate[index] == '(':
-                    state = 1
-                else:
-                    raise ValueError
-            elif state == 1:
-                if coordinate[index] == '(':
-                    x_index_start = index+1
-                    state = 2
-                else:
-                    raise ValueError
-            elif state == 2:
-                if coordinate[index] == ',':
-                    x_index_end = index
-                    y_index_start = index+1
-                    state = 3
-            elif state == 3:
-                if coordinate[index] == ')':
-                    if coordinate[index+1] == ')':
-                        y_index_end = index
-                        state = 4
-                        break
-                    else:
-                        raise ValueError
-            elif state == 4:
-                break
-            index += 1
 
-        if x_index_start < 0 or x_index_end < 0 or y_index_start < 0 or y_index_end < 0:
+    @staticmethod
+    def parse_point(coordinate):
+        """
+        Given a journey string in the following format:
+        ((x1,y2),(x2,y2))
+        turns it to a tuple of two tuples
+
+        @type coordinate: str
+        @return journey: tuple
+        """
+
+        # Remove all empty spaces
+        coordinate = coordinate.strip()
+
+        # Remove the parentheses
+        coordinate = coordinate.replace('(', '')
+        coordinate = coordinate.replace(')', '')
+
+        # split leftover string to a list for each ,
+        number_list = coordinate.split(',')
+
+        # The result is a list of 4 numbers
+        if len(number_list) != 4:
             raise ValueError
 
-        x_str = coordinate[x_index_start:x_index_end]
-        y_str = coordinate[y_index_start:y_index_end]
+        # Create a tuple from those numbers, for each starting and ending points
+        t_1 = tuple([float(number_list[0]), float(number_list[1])])
+        t_2 = tuple([float(number_list[2]), float(number_list[3])])
 
-        x = float(x_str)
-        y = float(y_str)
-        return x, y
+        # The journey is a tuple of starting and ending points
+        journey = tuple([t_1, t_2])
+
+        return journey
+
+
+
+
 
 
