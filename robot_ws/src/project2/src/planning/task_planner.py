@@ -6,10 +6,12 @@ class TaksPlanner:
 
     PLAN_EXIST = False
     TASK_LIST = None
+    PLAN_LIST = None
+    curr_location = None
 
-    def __init__(self):
+    def __init__(self,location):
         self.timer = rospy.Timer(rospy.Duration(secs=1), self.control())
-
+        self.curr_location = location
     def control(self, timer_event):
         if not self.PLAN_EXIST:
             self.ask_user_for_plan()
@@ -32,3 +34,4 @@ class TaksPlanner:
 
     def create_new_plan(self):
         print(self.TASK_LIST)
+
