@@ -7,8 +7,7 @@ from geometry_msgs.msg import Twist
 from movement.bumper_control import BumperControl
 from movement.movement_commands import MovementCommands
 from movement.collision_avoidance.collision_avoidance import Avoidance
-
-
+from planning.task_planner import TaskPlanner
 class Dispatcher:
     """
     The dispatcher, dispatches different services and contains information about robot
@@ -26,7 +25,8 @@ class Dispatcher:
         # dispatch bumper control
         self.bumper_control = BumperControl(dispatcher=self)
         self.avoidance = Avoidance(dispatcher=self)
-
+        #start up task_planner()
+        self.TaskPlanner = TaskPlanner(location=self.__GLOBAL_OFFSET)
         # Subscribe to odometry
         rospy.Subscriber('odom', Odometry, self.__parse_current_location)
 
@@ -34,6 +34,7 @@ class Dispatcher:
 
         self.publisher = rospy.Publisher("/mobile_base/commands/velocity", Twist, queue_size=1)
         rospy.Timer(rospy.Duration(secs=2), self.move_it)
+	
 
     def print_(self, t):
         print(self.get_current_location())
