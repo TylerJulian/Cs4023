@@ -33,24 +33,24 @@ class TaskPlanner:
                 break
             else:
                 print("Wrong option")
+# this function sorts the given list by the distance of the first coordinate pairs from the starting point
+# The second point is immediately added after the firsts point.
+# This makes it easy to remove the secondary task from the list.
+# Here is what the example given points become. First line is the input list of points and the second list is the output
+#[((2, 2.5), (12.5, 2.5)), ((12.5, 12.5), (5, 12.5)), ((2, 3), (9, 8))]
+#[(2, 2.5), (12.5, 2.5), (2, 3), (9, 8), (12.5, 12.5), (5, 12.5)]
 
     def create_new_plan(self):
         print(self.TASK_LIST)
-        list_start = []
-        list_end = []
-        #EXAMPLE_TASKS = [((2, 2.5), (12.5, 2.5)), ((12.5, 12.5), (5, 12.5))]
+        self.TASK_LIST.sort(key = self.distance)
+        temp_list = []
         for x in self.TASK_LIST:
-            #print(x)
-            list_start.append(x[0])
-            list_end.append(x[1])
-        #print(list_start)
-        list_start.sort(key = self.distance)
-        list_end.sort(key = self.distance)
-        #print(list_end)
-        self.TASK_LIST = list_start + list_end
+            temp_list.append(x[0])
+            temp_list.append(x[1])
+        self.TASK_LIST = temp_list
         print(self.TASK_LIST)
 
     def distance(self, pos):
         #print(pos)
         #print(self.curr_location[0])
-        return (pos[0]-self.curr_location[0])**2 + (pos[1] - self.curr_location[1])**2
+        return (pos[0][0]-self.curr_location[0])**2 + (pos[0][1] - self.curr_location[1])**2
