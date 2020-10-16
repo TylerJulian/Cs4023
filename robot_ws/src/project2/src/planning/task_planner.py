@@ -7,13 +7,13 @@ class TaskPlanner:
     PLAN_EXIST = False
     TASK_LIST = None
     PLAN_LIST = None
-    curr_location = (3.281, 2.5)
+    curr_location = (3.281, 2.5) # default position. Gets immediately replaced by the actual position
 
 
-    def __init__(self,location):
+    def __init__(self,location, dispatcher):
+        self.dispatcher = dispatcher
         self.timer = rospy.Timer(rospy.Duration(secs=1), self.control())
-        self.curr_location = location
-    #def control(self, timer_event):
+        self.curr_location = self.dispatcher.get_current_location
     def control(self):
         if not self.PLAN_EXIST:
             self.ask_user_for_plan()

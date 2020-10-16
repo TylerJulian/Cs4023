@@ -17,6 +17,8 @@ class Dispatcher:
     __GLOBAL_OFFSET = (3.281, 2.5)
     __current_location = (0, 0)
     __angle = 0
+    __dist_from_task = 0
+    __last_dist = 0
 
     def __init__(self):
         # Set some parameters
@@ -25,8 +27,9 @@ class Dispatcher:
         # dispatch bumper control
         self.bumper_control = BumperControl(dispatcher=self)
         self.avoidance = Avoidance(dispatcher=self)
-        #start up task_planner()
-        self.TaskPlanner = TaskPlanner(location=self.__GLOBAL_OFFSET)
+        #dispatch task planner
+        self.TaskPlanner = TaskPlanner(location=self.__GLOBAL_OFFSET, dispatcher = self)
+
         # Subscribe to odometry
         rospy.Subscriber('odom', Odometry, self.__parse_current_location)
 
@@ -55,6 +58,8 @@ class Dispatcher:
         # Set variables
         self.__current_location = (c_x, c_y)
         self.__angle = c_a
+
+        
 
     def  get_current_location(self):
         """
