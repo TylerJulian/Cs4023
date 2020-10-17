@@ -79,3 +79,9 @@ class TaskPlanner:
         @return: (x,y) next task: tuple
         """
         return self.TASK_QUEUE.pop(0)
+
+    def is_next_task_exists(self):
+        """
+        @return: True if there is a task to do: bool
+        """
+        return len(self.TASK_QUEUE) > 0

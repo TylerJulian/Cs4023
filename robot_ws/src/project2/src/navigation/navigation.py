@@ -1,12 +1,23 @@
 import math
 
+import rospy
+
 from movement.movement_commands import MovementCommands
 
 
 class Navigation:
     def __init__(self, dispatcher):
         self.__dispatcher = dispatcher
-        self.move_to_next_point()
+        while dispatcher.task_planner.is_next_task_exists():
+            # Always check out on movement status
+            if rospy.get_param("HALT"):
+                return
+
+            while rospy.get_param("WAIT"):
+                # Wait while the WAIT resolves
+                pass
+            # TODO: Observe avoidance interferences
+            self.move_to_next_point()
 
     def move_to_next_point(self):
         current_location_info = self.__dispatcher.get_current_location()
