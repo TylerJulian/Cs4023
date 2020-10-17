@@ -9,11 +9,15 @@ class MovementCommands:
         pass
 
     @staticmethod
-    def turn_robot(pub, angle, clockwise, speed=40):
+    def turn_robot(angle, clockwise, speed=40):
         """
         A function used to turn the robot, an imitation of code used in ros wiki
         http://wiki.ros.org/turtlesim/Tutorials/Rotating%20Left%20and%20Right
         """
+        # create the publisher
+        pub = MovementCommands.__get_publisher()
+
+
         # set rotation semaphore true
 
         direction_command = Twist()
@@ -47,14 +51,17 @@ class MovementCommands:
         # stop the rotation
         direction_command.angular = Vector3(0, 0, 0)
         pub.publish(direction_command)
+        pub.unregister()
 
     @staticmethod
-    def move_robot(pub, distance, speed=0.2):
+    def move_robot(distance, speed=0.2):
         """
         moves the robot straight on specified distance
         An imitation of code used in ros wiki
         http://wiki.ros.org/turtlesim/Tutorials/Rotating%20Left%20and%20Right
         """
+
+        pub = MovementCommands.__get_publisher()
 
         move_command = Twist()
 
@@ -74,3 +81,9 @@ class MovementCommands:
 
         move_command.linear = Vector3(0, 0, 0)
         pub.publish(move_command)
+        pub.unregister()
+
+
+    @staticmethod
+    def __get_publisher():
+        return rospy.Publisher("/mobile_base/commands/velocity", Twist, queue_size=1)

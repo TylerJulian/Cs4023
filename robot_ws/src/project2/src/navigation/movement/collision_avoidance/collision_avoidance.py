@@ -21,7 +21,7 @@ class Avoidance:
     def __init__(self, dispatcher):
         self.dispatcher = dispatcher
         # Get the movement publisher
-        self.pub = rospy.Publisher("/mobile_base/commands/velocity", Twist, queue_size=1)
+
 
         # The laser info come from the sensor
         self.laser_info = None
@@ -66,15 +66,15 @@ class Avoidance:
             if obstcl_dir == lw.CENTER:
                 # print("Obstacle in center")
                 clockwise = obstcl_angle >= 0
-                MovementCommands.turn_robot(self.pub, abs(obstcl_angle) + 180 + delta_theta, clockwise)
+                MovementCommands.turn_robot(abs(obstcl_angle) + 180 + delta_theta, clockwise)
             # turn back
             elif obstcl_dir == lw.RIGHT:
                 # print("Obstacle in right")
-                MovementCommands.turn_robot(self.pub, 90 - abs(obstcl_angle) + delta_theta, False)
+                MovementCommands.turn_robot(90 - abs(obstcl_angle) + delta_theta, False)
             # turn left
             elif obstcl_dir == lw.LEFT:
                 # print("Obstacle in left")
-                MovementCommands.turn_robot(self.pub, 90 - abs(obstcl_angle) + delta_theta, True)
+                MovementCommands.turn_robot(90 - abs(obstcl_angle) + delta_theta, True)
             # turn right
 
             # set the wait param back to false
@@ -87,4 +87,3 @@ class Avoidance:
         """
         print("[Avoidance] killing")
         self.timer.shutdown()
-        self.pub.unregister()
