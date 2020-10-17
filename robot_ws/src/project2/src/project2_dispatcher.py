@@ -2,12 +2,13 @@ import math
 
 import rospy
 from nav_msgs.msg import Odometry
-from geometry_msgs.msg import Twist
 
-from movement.bumper_control import BumperControl
-from movement.movement_commands import MovementCommands
-from movement.collision_avoidance.collision_avoidance import Avoidance
+from navigation.movement.movement_commands import MovementCommands
+from navigation.movement.bumper_control import BumperControl
+from navigation.movement.collision_avoidance.collision_avoidance import Avoidance
 from planning.task_planner import TaskPlanner
+from navigation.navigation import Navigation
+
 class Dispatcher:
     """
     The dispatcher, dispatches different services and contains information about robot
@@ -24,26 +25,24 @@ class Dispatcher:
         # Set some parameters
         rospy.set_param("HALT", False)
         rospy.set_param("WAIT", False)
+        # Subscribe to odometry
+        rospy.Subscriber('odom', Odometry, self.__parse_current_location)
+
         # dispatch bumper control
         self.bumper_control = BumperControl(dispatcher=self)
         self.avoidance = Avoidance(dispatcher=self)
         #dispatch task planner
-        self.TaskPlanner = TaskPlanner(location=self.__GLOBAL_OFFSET, dispatcher = self)
+        self.task_planner = TaskPlanner(dispatcher=self)
 
-        # Subscribe to odometry
-        rospy.Subscriber('odom', Odometry, self.__parse_current_location)
+        # dispatch navigation
+        self.navigation = Navigation(dispatcher=self)
 
-        rospy.Timer(rospy.Duration(secs=1), self.print_)
-
-        self.publisher = rospy.Publisher("/mobile_base/commands/velocity", Twist, queue_size=1)
-        rospy.Timer(rospy.Duration(secs=2), self.move_it)
-	
 
     def print_(self, t):
         print(self.get_current_location())
 
     def move_it(self, t):
-        MovementCommands.move_robot(self.publisher, 1)
+        MovementCommands.move_robot(1)
 
     def __parse_current_location(self, data):
         # retrieve positional information from data and convert to feet and degree
@@ -59,9 +58,7 @@ class Dispatcher:
         self.__current_location = (c_x, c_y)
         self.__angle = c_a
 
-        
-
-    def  get_current_location(self):
+    def get_current_location(self):
         """
         gets the current location information with current angle inform of
         ((x,y),angle)
