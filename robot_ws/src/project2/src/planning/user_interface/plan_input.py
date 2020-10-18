@@ -1,13 +1,13 @@
 class PlanInput:
 
-    EXAMPLE_TASKS = [((3, 2.5), (12, 2.5)), ((12, 12.5), (5, 12.5)), ((2, 2.5), (3, 14))]
+    EXAMPLE_TASKS = [((3, 2.5), (12, 2.5)), ((12, 12.5), (5, 12.5)), ((2, 2.5), (9, 5))]
 
     def __init__(self):
         pass
 
     @staticmethod
     def initial_user_prompt():
-        print("Welcome, Choose one of following options or Ctrl+C to exit anytime: ")
+        print("Choose one of following options or Ctrl+C to exit anytime: ")
         print("[1]: Enter coordinates for tasks by hand.")
         print("[2]: Use provided example set of tasks.")
         try:

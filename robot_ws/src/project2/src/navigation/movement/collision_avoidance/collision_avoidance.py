@@ -18,6 +18,9 @@ class Avoidance:
     prevents hitting obstacles.
     """
 
+    __latest_collision_info = None
+    __laser_loaded = False
+
     def __init__(self, dispatcher, is_navigation=False):
         self.dispatcher = dispatcher
         self._is_nav = is_navigation
@@ -48,18 +51,28 @@ class Avoidance:
         try:
             # Detection
             obstcl_exist, obstcl_dir, obstcl_angle, obstcl_distance = lw.detect_obstacles(self.laser_info)
+            self.__laser_loaded = True
         except AttributeError:
             print("Laser not loaded yet")
+            self.__laser_loaded = False
             return
 
         if not obstcl_exist:
             return
         else:
+            # Register the obstacle information
+            self.__latest_collision_info = {
+                "direction": obstcl_dir,
+                "angle": obstcl_angle,
+                "distance": obstcl_distance
+            }
 
             # set the WAIT parameter so other nodes stop trying to move the robot while turning
             rospy.set_param("WAIT", True)
 
             if self._is_nav:
+                rospy.set_param("WAIT", False)
+                rospy.set_param("HOLD", True)
                 MovementCommands.stop_robot()
                 return
 
@@ -83,6 +96,18 @@ class Avoidance:
 
             # set the wait param back to false
             rospy.set_param("WAIT", False)
+
+    def is_laser_loaded(self):
+        """
+        @return: true if the laser is loaded and ready to work.
+        """
+        return self.__laser_loaded
+
+    def get_obstacle_info(self):
+        """
+        @return: information about the latest obstacle :{"direction":<>, "angle":<>, "distance":<>}
+        """
+        return self.__latest_collision_info
 
     def kill(self):
         """

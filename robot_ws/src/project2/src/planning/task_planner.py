@@ -17,10 +17,6 @@ class TaskPlanner:
         self.curr_location = self.dispatcher.get_current_location
         self.ask_user_for_plan()
 
-    def control(self, timer_event):
-        if not self.PLAN_EXIST:
-            self.ask_user_for_plan()
-
     def ask_user_for_plan(self):
         """
         The user prompt
@@ -54,15 +50,24 @@ class TaskPlanner:
         @return None
         """
 
+        # all of the starting points
         starting_points_group = list()
+
+        # all of the ending points
         ending_points_group = list()
+
+        # ending points which their starting point processed
         consideration_group = list()
+
+        # the point in which compare the next closest point
         comparing_point = self.dispatcher.get_current_location()[0]
 
+        # Fill starting and ending points
         for t in self.TASK_LIST:
             starting_points_group.append(t[0])
             ending_points_group.append(t[1])
 
+        # Sort it out!
         while len(starting_points_group) > 0 or len(consideration_group) > 0:
 
             if len(starting_points_group) == 0:
@@ -73,38 +78,38 @@ class TaskPlanner:
                 comparing_point = point
 
             else:
+                # find closest point on both starting points and considered ending points
                 i_1 = TaskPlanner.get_min_distance_index(comparing_point, starting_points_group)
                 i_2 = TaskPlanner.get_min_distance_index(comparing_point, consideration_group)
 
+                # Figure out the closest point
                 dist_1 = TaskPlanner.distance2(comparing_point, starting_points_group[i_1])
                 dist_2 = 1000
                 if i_2 >= 0:
                     dist_2 = TaskPlanner.distance2(comparing_point, consideration_group[i_2])
 
                 if i_2 < 0 or dist_1 <= dist_2:
+                    # The point on starting point is closest
 
                     # take out one from starting points
                     start_point = starting_points_group.pop(i_1)
                     end_point = ending_points_group.pop(i_1)
-                    print(start_point)
-                    print(end_point)
+
+                    # Add its ending point to be considered
                     consideration_group.append(end_point)
+
+                    # add point to the list
                     self.PLANED_LIST.append(start_point)
                     comparing_point = start_point
 
                 else:
+                    # An ending point is closest
                     point = consideration_group.pop(i_2)
                     self.PLANED_LIST.append(point)
                     comparing_point = point
 
         self.TASK_QUEUE = self.PLANED_LIST
         self.PLAN_EXIST = True
-        print(self.PLANED_LIST)
-
-
-
-
-
 
     @staticmethod
     def get_min_distance_index(point, p_list):
@@ -127,7 +132,6 @@ class TaskPlanner:
 
         return closest_index
 
-
     @staticmethod
     def distance2(a, b):
         """
@@ -138,20 +142,6 @@ class TaskPlanner:
         """
 
         return math.sqrt((b[0] - a[0])**2 + (b[1] - a[1])**2)
-
-
-    def distance(self, pos):
-        """
-        Calculates the distance from current location to the given position
-        @param pos: given position
-        @return: distance: float
-        """
-        #print(pos)
-        #print(self.curr_location[0])
-        # the location information is ((x,y),angle)
-        # so x => location[0][0]
-        # and y = location[0][1]
-        return math.sqrt((pos[0][0]-self.curr_location()[0][1])**2 + (pos[0][1] - self.curr_location()[0][1])**2)
 
     def get_next_task(self):
         """

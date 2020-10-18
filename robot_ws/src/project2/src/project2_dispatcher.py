@@ -1,4 +1,5 @@
 import math
+import subprocess
 
 import rospy
 from nav_msgs.msg import Odometry
@@ -25,17 +26,31 @@ class Dispatcher:
         # Set some parameters
         rospy.set_param("HALT", False)
         rospy.set_param("WAIT", False)
+        rospy.set_param("HOLD", False)
         # Subscribe to odometry
         rospy.Subscriber('odom', Odometry, self.__parse_current_location)
 
         # dispatch bumper control
         self.bumper_control = BumperControl(dispatcher=self)
         self.avoidance = Avoidance(dispatcher=self, is_navigation=True)
-        #dispatch task planner
-        self.task_planner = TaskPlanner(dispatcher=self)
 
-        # dispatch navigation
-        self.navigation = Navigation(dispatcher=self)
+        # wait until laser is ready
+        while not self.avoidance.is_laser_loaded():
+            pass
+
+        # clear the stdout and wait
+        self.shell = subprocess.Popen("clear", shell=True)
+        self.shell.wait()
+
+        print("Welcome")
+
+        while not rospy.is_shutdown():
+
+            # dispatch task planner
+            self.task_planner = TaskPlanner(dispatcher=self)
+
+            # dispatch navigation
+            self.navigation = Navigation(dispatcher=self)
 
     def __parse_current_location(self, data):
         # retrieve positional information from data and convert to feet and degree

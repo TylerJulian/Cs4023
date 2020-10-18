@@ -8,6 +8,15 @@ class MovementCommands:
     def __init__(self):
         pass
 
+
+    @staticmethod
+    def is_cleared_to_go():
+        h = rospy.get_param("HALT")
+        w = rospy.get_param("WAIT")
+        hd = rospy.get_param("HOLD")
+        return not (h or w or hd)
+
+
     @staticmethod
     def turn_robot(angle, clockwise, speed=40):
         """
@@ -16,9 +25,6 @@ class MovementCommands:
         """
         # create the publisher
         pub = MovementCommands.__get_publisher()
-
-
-        # set rotation semaphore true
 
         direction_command = Twist()
 
@@ -79,7 +85,7 @@ class MovementCommands:
         # moving forward for specified distance
         t_0 = rospy.Time.now().to_sec()
         current_distance = 0
-        while current_distance < distance and (not (rospy.get_param("HALT") or rospy.get_param("WAIT"))):
+        while current_distance < distance and MovementCommands.is_cleared_to_go():
             pub.publish(move_command)
             t_1 = rospy.Time.now().to_sec()
             current_distance = speed * (t_1 - t_0)
