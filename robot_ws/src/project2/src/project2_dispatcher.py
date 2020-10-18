@@ -37,18 +37,19 @@ class Dispatcher:
         # dispatch navigation
         self.navigation = Navigation(dispatcher=self)
 
-
-    def print_(self, t):
-        print(self.get_current_location())
-
-    def move_it(self, t):
-        MovementCommands.move_robot(1)
-
     def __parse_current_location(self, data):
         # retrieve positional information from data and convert to feet and degree
         c_x = Dispatcher.to_feet(data.pose.pose.position.x)
         c_y = Dispatcher.to_feet(data.pose.pose.position.y)
-        c_a = math.degrees(data.pose.pose.orientation.z)
+
+        # calculate the angle from Quaternion to Euler angles conversion
+        # https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
+        x = data.pose.pose.orientation.x
+        y = data.pose.pose.orientation.y
+        z = data.pose.pose.orientation.z
+        w = data.pose.pose.orientation.w
+
+        c_a = math.degrees(math.atan2(2*((w*z)+(x*y)), 1-2*((y**2) + (z**2))))
 
         # Add global offset to the locational data
         c_x += Dispatcher.__GLOBAL_OFFSET[0]
