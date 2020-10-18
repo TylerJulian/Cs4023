@@ -59,7 +59,12 @@ class MovementCommands:
         moves the robot straight on specified distance
         An imitation of code used in ros wiki
         http://wiki.ros.org/turtlesim/Tutorials/Rotating%20Left%20and%20Right
+
+        @param distance distance to move in feet
+        @param speed speed in which to move (default= 0.2)
         """
+        # convert entered distance to meter
+        distance = 0.3048 * distance
 
         pub = MovementCommands.__get_publisher()
 
