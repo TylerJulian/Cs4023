@@ -41,12 +41,6 @@ class Navigation:
                 self.move_to_the_point(task_stack[len(task_stack)-1])
                 print(self.__dispatcher.get_current_location()[0])
 
-
-
-
-
-
-
     def move_to_the_point(self, point):
         current_location_info = self.__dispatcher.get_current_location()
         current_coordinates = current_location_info[0]
@@ -58,28 +52,37 @@ class Navigation:
         distance = Navigation.__calculate_distance(current_coordinates, goal)
 
         # 2- Angle
-        g_angle = math.degrees(math.atan2(goal[1]-current_coordinates[1], goal[0]-current_coordinates[1]))
+        g_angle = math.degrees(math.atan2(goal[1]-current_coordinates[1], goal[0]-current_coordinates[0]))
 
 
         # find out which side would be closer to turn
         clockwise = False
+        '''
         if abs(g_angle - current_angle) <= 180:
             angle = g_angle-current_angle
+            if angle < 0:
+                clockwise = True
+                angle = abs(angle)
         else:
             angle = g_angle + (360 - current_angle)
             clockwise = True
+        '''
+        angle = g_angle - current_angle
+        if angle < 0:
+            clockwise = True
+            angle = abs(angle)
 
         if Navigation.DEBUG:
             print("Next Move: ")
             print("Angle Between points: " + str(g_angle))
             print("Robot Angle change: " + str(angle))
             print("Distance: " + str(distance))
+            print("Current angle: " + str(current_angle))
 
         # turn the robot
         MovementCommands.turn_robot(angle, clockwise)
 
         # move that robot
-        # TODO: DAMN! I forgot that move robot works in meter!
         MovementCommands.move_robot(distance)
 
 

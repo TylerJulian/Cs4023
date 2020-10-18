@@ -30,7 +30,7 @@ class Dispatcher:
 
         # dispatch bumper control
         self.bumper_control = BumperControl(dispatcher=self)
-        self.avoidance = Avoidance(dispatcher=self)
+        self.avoidance = Avoidance(dispatcher=self, is_navigation=True)
         #dispatch task planner
         self.task_planner = TaskPlanner(dispatcher=self)
 

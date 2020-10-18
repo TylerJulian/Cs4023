@@ -90,5 +90,10 @@ class MovementCommands:
 
 
     @staticmethod
+    def stop_robot():
+        MovementCommands.move_robot(0)
+
+
+    @staticmethod
     def __get_publisher():
         return rospy.Publisher("/mobile_base/commands/velocity", Twist, queue_size=1)
