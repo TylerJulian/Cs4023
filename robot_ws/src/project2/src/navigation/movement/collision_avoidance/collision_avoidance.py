@@ -18,9 +18,9 @@ class Avoidance:
     prevents hitting obstacles.
     """
 
-    def __init__(self, dispatcher):
+    def __init__(self, dispatcher, is_navigation=False):
         self.dispatcher = dispatcher
-        # Get the movement publisher
+        self._is_nav = is_navigation
 
 
         # The laser info come from the sensor
@@ -58,6 +58,10 @@ class Avoidance:
 
             # set the WAIT parameter so other nodes stop trying to move the robot while turning
             rospy.set_param("WAIT", True)
+
+            if self._is_nav:
+                MovementCommands.stop_robot()
+                return
 
             # introduce a small random angle to prevent corner deadlocks
             delta_theta = random.randrange(-3, 3)
