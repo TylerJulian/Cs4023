@@ -35,10 +35,11 @@ class Navigation:
                 # Wait while the WAIT resolves
                 pass
 
-            if rospy.get_param("HOLD"):
+            if rospy.get_param("HOLD") and len(task_stack) > 0:
                 # Investigate the avoidance issues
                 obstacle_data = self.__dispatcher.avoidance.get_obstacle_info()
                 if obstacle_data is not None:
+                    print(task_stack)
                     divergence = self.create_avoidance_point(obstacle_data, task_stack[len(task_stack)-1])
                     if divergence is None:
                         # Cannot find a better way to reach the point; give up

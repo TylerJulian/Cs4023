@@ -1,7 +1,7 @@
 <launch>
     <!-- Our nodes -->
     <node pkg="project2" type="main_node.py" name="main_node" output="screen"/>
-
+    <!--node pkg="project2" type="main_node.py" name="main_node" output="screen" launch-prefix="xterm -e" /-->
     <!-- This was taken from the gazebo_ros_pkgs luanch files-->
     <!-- https://github.com/ros-simulation/gazebo_ros_pkgs/blob/kinetic-devel/gazebo_ros/launch/empty_world.launch-->
     <arg name="world_file" default="$(find project2)/gazebo_world/project_1_world"/>
