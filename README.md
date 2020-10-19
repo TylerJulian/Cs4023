@@ -1,7 +1,7 @@
 # Cs4023 - intro to intelligent robotics.
 Project code for CS 4023: intro to intelligent robotics at OU.
 
-Group Members: Griffin Meyers, Tyler Julian, Yashar G. Ahari
+Group Members: Yashar G. Ahari, Tyler Julian, Griffin Meyers
 
 [World and Launch file Documentation for project 2](https://docs.google.com/document/d/1AL0kA7Uu-11LSPjjIP-D6XwD_32g5IPbwYkT6CpIs40/edit?usp=sharing)
 
@@ -18,7 +18,9 @@ catkin_make
 
 source devel/setup.bash
 
-roslaunch src/project1/launch/project1.launch
+roslaunch src/project1/launch/project1.launch (for project 1)
+
+roslaunch src/project2/launch/project2.launch (for project 2)
 
 
 ## Tasks 
